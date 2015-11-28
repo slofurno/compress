@@ -1,0 +1,11 @@
+*
+!*.*
+!*/
+!makefile
+
+/node_modules
+*.exe
+test.db
+static/*.js
+/secret
+
