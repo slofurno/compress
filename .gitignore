@@ -8,4 +8,4 @@
 test.db
 static/*.js
 /secret
-
+*.swp

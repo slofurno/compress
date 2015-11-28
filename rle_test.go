@@ -24,12 +24,35 @@ func TestRLE(t *testing.T) {
 func TestLZW78(t *testing.T) {
 
 	s, _ := ioutil.ReadFile("test/short.txt")
+	fmt.Println("source:", string(s))
 
 	alphabet := []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 	encoder := NewLZ78(alphabet)
-	encoder.Encode(s)
+	encoded := encoder.Encode(s)
+	fmt.Println(encoded)
 
-	fmt.Println(encoder.output)
+	decoder := NewLZ78(alphabet)
+	decoded := decoder.Decode(encoded)
+
+	fmt.Println("decoded:", string(decoded))
+
+}
+
+func TestLZW78_long(t *testing.T) {
+	s, _ := ioutil.ReadFile("test/frame.txt")
+	fmt.Println("source:", string(s))
+	alphabet := []byte(".^:-=+*#%@")
+
+	encoder := NewLZ78(alphabet)
+	encoded := encoder.Encode(s)
+	fmt.Println("encoded:", encoded)
+
+	decoder := NewLZ78(alphabet)
+	decoded := decoder.Decode(encoded)
+
+	fmt.Println("decoded:", string(decoded))
+
+	fmt.Println(len(s), len(encoded), len(decoded))
 
 }
 
