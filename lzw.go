@@ -3,22 +3,24 @@ package rle
 import ()
 
 type LZW struct {
-	lookup []*lzwEntry
+	lookup []lzwEntry
 }
 
 func NewLZW(alphabet []byte) *LZW {
-	lookup := []*lzwEntry{&lzwEntry{char: 0, prev: 0}}
+	lookup := make([]lzwEntry, 0, 4096)
+	lookup = append(lookup, lzwEntry{char: 0, prev: 0})
+	//	lookup := []*lzwEntry{&lzwEntry{char: 0, prev: 0}}
 
 	for _, a := range alphabet {
-		lookup = append(lookup, &lzwEntry{prev: 0, char: a})
+		lookup = append(lookup, lzwEntry{prev: 0, char: a})
 	}
 
 	return &LZW{lookup: lookup}
 }
 
 type lzwEntry struct {
-	char byte
 	prev uint16
+	char byte
 }
 
 func (self *LZW) LLen() int {
@@ -52,7 +54,7 @@ func (self *LZW) Decode(bytes []byte) []byte {
 		if input[i] >= uint16(len(self.lookup)) {
 
 			sc := self.rebuild(input[i-1])
-			self.lookup = append(self.lookup, &lzwEntry{
+			self.lookup = append(self.lookup, lzwEntry{
 				char: sc[len(sc)-1],
 				prev: input[i-1],
 			})
@@ -63,7 +65,7 @@ func (self *LZW) Decode(bytes []byte) []byte {
 			word = self.rebuild(input[i])
 		} else {
 			word = self.rebuild(input[i])
-			self.lookup = append(self.lookup, &lzwEntry{
+			self.lookup = append(self.lookup, lzwEntry{
 				char: word[len(word)-1],
 				prev: input[i-1],
 			})
@@ -80,7 +82,7 @@ func (self *LZW) Decode(bytes []byte) []byte {
 
 func (self *LZW) Encode(data []byte) []byte {
 	lookup := self.lookup
-	output := []uint16{}
+	output := make([]byte, 0, 2*len(data))
 	var last uint16 = 0
 
 	i := 0
@@ -98,8 +100,8 @@ func (self *LZW) Encode(data []byte) []byte {
 				break
 			}
 
-			lookup = append(lookup, &lzwEntry{char: data[i], prev: last})
-			output = append(output, last)
+			lookup = append(lookup, lzwEntry{char: data[i], prev: last})
+			output = append(output, byte(last&255), byte(last>>8))
 			last = 0
 		} else {
 			last = j
@@ -112,12 +114,5 @@ func (self *LZW) Encode(data []byte) []byte {
 		panic("lookup bigger then max index")
 	}
 
-	//TODO:makes things easier but wastes alot of bits
-	tevs := []byte{}
-
-	for i = 0; i < len(output); i++ {
-		tevs = append(tevs, byte(output[i]&255), byte(output[i]>>8))
-	}
-
-	return tevs
+	return output
 }
