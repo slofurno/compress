@@ -6,48 +6,47 @@ import (
 	"testing"
 )
 
-/*
-func TestRLE(t *testing.T) {
+func TestRLE_frame(t *testing.T) {
 
 	s, err := ioutil.ReadFile("test/frame.txt")
 	if err != nil {
 		panic("read error")
 	}
 
-	encoder := NewRLEncoder()
-	encoder.Write(s)
+	encoder := NewRLE()
+	encoded := encoder.Encode(s)
 	//fmt.Println(encoder.Dump())
 	fmt.Println("input len", len(s))
-	fmt.Println("output len", len(encoder.buf))
+	fmt.Println("output len", len(encoded))
 
 }
-*/
-func TestLZW78(t *testing.T) {
+
+func TestLZW_small(t *testing.T) {
 
 	s, _ := ioutil.ReadFile("test/short.txt")
 	fmt.Println("source:", string(s))
 
 	alphabet := []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-	encoder := NewLZ78(alphabet)
+	encoder := NewLZW(alphabet)
 	encoded := encoder.Encode(s)
 
-	decoder := NewLZ78(alphabet)
+	decoder := NewLZW(alphabet)
 	decoded := decoder.Decode(encoded)
 
 	fmt.Println("decoded:", string(decoded))
 
 }
 
-func TestLZW78_long(t *testing.T) {
+func TestLZW_frame(t *testing.T) {
 	s, _ := ioutil.ReadFile("test/frame.txt")
 	fmt.Println("source:", string(s[2000:4000]))
 	alphabet := []byte(".^:-=+*#%@")
 
-	encoder := NewLZ78(alphabet)
+	encoder := NewLZW(alphabet)
 	encoded := encoder.Encode(s)
 	//fmt.Println("encoded:", encoded)
 
-	decoder := NewLZ78(alphabet)
+	decoder := NewLZW(alphabet)
 	decoded := decoder.Decode(encoded)
 
 	fmt.Println("decoded:", string(decoded[2000:4000]))

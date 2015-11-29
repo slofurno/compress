@@ -2,38 +2,32 @@ package rle
 
 import ()
 
-type Encoder interface {
-	Decode([]int) []byte
-	Encode([]byte) []int
-}
-
-type RLEncoder struct {
+type RLE struct {
 	dict []byte
-	len  int
 	buf  []byte
 }
 
-func NewRLEncoder() *RLEncoder {
-	return &RLEncoder{
+func NewRLE() *RLE {
+	return &RLE{
 		dict: make([]byte, 32),
 		buf:  make([]byte, 0),
 	}
 }
 
-func (self *RLEncoder) Dump() []byte {
+func (self *RLE) Dump() []byte {
 	return self.buf
 }
 
-func (self *RLEncoder) Write(s []byte) {
-	if len(s) == 0 {
-		return
+func (self *RLE) Encode(data []byte) []byte {
+	if len(data) == 0 {
+		return self.buf
 	}
 
-	var last byte = s[0]
+	var last byte = data[0]
 	var run byte = 1
 
-	for i := 1; i < len(s); i++ {
-		c := s[i]
+	for i := 1; i < len(data); i++ {
+		c := data[i]
 
 		if c == last && run < 255 {
 			run++
@@ -43,4 +37,6 @@ func (self *RLEncoder) Write(s []byte) {
 			last = c
 		}
 	}
+
+	return self.buf
 }
