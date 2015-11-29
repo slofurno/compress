@@ -3,19 +3,27 @@ package rle
 import ()
 
 type LZW struct {
-	runs map[string]int
+	runs        map[string]int
+	indexLookup [256]int
+	charLookup  [10]byte
+	words       *trie
+	length      int
 }
 
 func NewLZW(alphabet []byte) *LZW {
+	self := &LZW{words: &trie{val: -1}, length: len(alphabet) + 1}
+
 	runs := make(map[string]int)
 	runs[string(10)] = -1
 	i := 0
 	for i < len(alphabet) {
+		self.indexLookup[alphabet[i]] = i
+		self.charLookup[i] = alphabet[i]
 		runs[string(alphabet[i])] = i + 1
+		self.words.nodes[i] = &trie{val: i + 1}
 		i++
 	}
-
-	return &LZW{runs: runs}
+	return self
 }
 
 type LZWD struct {
@@ -88,6 +96,38 @@ func (self *LZWD) Decode(bytes []byte) []byte {
 }
 
 func (self *LZW) Encode(data []byte) []byte {
+	output := make([]byte, 0, 256)
+	i := 0
+
+	head := self.words
+	lookup := self.indexLookup
+	length := self.length
+	var li int
+
+	for i < len(data) {
+
+		li = lookup[data[i]]
+		if head.nodes[li] == nil {
+
+			if head.val == -1 {
+				break
+			}
+
+			head.nodes[li] = &trie{val: length}
+			length++
+
+			output = append(output, byte(head.val&255), byte(head.val>>8))
+			head = self.words
+		} else {
+			head = head.nodes[li]
+			i++
+		}
+	}
+
+	return output
+}
+
+func (self *LZW) Encode2(data []byte) []byte {
 	output := make([]byte, 0, 2*len(data))
 	words := self.runs
 	count := len(words)

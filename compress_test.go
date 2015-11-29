@@ -21,6 +21,7 @@ func TestRLE_frame(t *testing.T) {
 
 }
 
+/*
 func TestLZW_small(t *testing.T) {
 
 	s, _ := ioutil.ReadFile("test/short.txt")
@@ -38,6 +39,7 @@ func TestLZW_small(t *testing.T) {
 	fmt.Println("decoded:", string(decoded))
 
 }
+*/
 
 func TestLZW_frame(t *testing.T) {
 	s, _ := ioutil.ReadFile("test/frame.txt")
@@ -55,6 +57,14 @@ func TestLZW_frame(t *testing.T) {
 
 	fmt.Println(len(s), len(encoded), len(decoded))
 
+}
+
+func Test_trie(t *testing.T) {
+	tr := &trie{
+		val: 24,
+	}
+	tr.nodes[0] = &trie{}
+	fmt.Println(tr.nodes[4])
 }
 
 /*
