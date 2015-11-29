@@ -3,8 +3,8 @@ package rle
 import ()
 
 type Encoder interface {
-	Dump() []byte
-	Write([]byte)
+	Decode([]int) []byte
+	Encode([]byte) []int
 }
 
 type RLEncoder struct {

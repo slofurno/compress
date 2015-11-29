@@ -6,6 +6,7 @@ import (
 	"testing"
 )
 
+/*
 func TestRLE(t *testing.T) {
 
 	s, err := ioutil.ReadFile("test/frame.txt")
@@ -15,12 +16,12 @@ func TestRLE(t *testing.T) {
 
 	encoder := NewRLEncoder()
 	encoder.Write(s)
-	fmt.Println(encoder.Dump())
+	//fmt.Println(encoder.Dump())
 	fmt.Println("input len", len(s))
 	fmt.Println("output len", len(encoder.buf))
 
 }
-
+*/
 func TestLZW78(t *testing.T) {
 
 	s, _ := ioutil.ReadFile("test/short.txt")
@@ -29,7 +30,6 @@ func TestLZW78(t *testing.T) {
 	alphabet := []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 	encoder := NewLZ78(alphabet)
 	encoded := encoder.Encode(s)
-	fmt.Println(encoded)
 
 	decoder := NewLZ78(alphabet)
 	decoded := decoder.Decode(encoded)
@@ -40,17 +40,17 @@ func TestLZW78(t *testing.T) {
 
 func TestLZW78_long(t *testing.T) {
 	s, _ := ioutil.ReadFile("test/frame.txt")
-	fmt.Println("source:", string(s))
+	fmt.Println("source:", string(s[2000:4000]))
 	alphabet := []byte(".^:-=+*#%@")
 
 	encoder := NewLZ78(alphabet)
 	encoded := encoder.Encode(s)
-	fmt.Println("encoded:", encoded)
+	//fmt.Println("encoded:", encoded)
 
 	decoder := NewLZ78(alphabet)
 	decoded := decoder.Decode(encoded)
 
-	fmt.Println("decoded:", string(decoded))
+	fmt.Println("decoded:", string(decoded[2000:4000]))
 
 	fmt.Println(len(s), len(encoded), len(decoded))
 
