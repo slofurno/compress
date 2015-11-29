@@ -30,7 +30,9 @@ func TestLZW_small(t *testing.T) {
 	encoder := NewLZW(alphabet)
 	encoded := encoder.Encode(s)
 
-	decoder := NewLZW(alphabet)
+	fmt.Println(encoded)
+
+	decoder := NewLZWD(alphabet)
 	decoded := decoder.Decode(encoded)
 
 	fmt.Println("decoded:", string(decoded))
@@ -46,7 +48,7 @@ func TestLZW_frame(t *testing.T) {
 	encoded := encoder.Encode(s)
 	//fmt.Println("encoded:", encoded)
 
-	decoder := NewLZW(alphabet)
+	decoder := NewLZWD(alphabet)
 	decoded := decoder.Decode(encoded)
 
 	fmt.Println("decoded:", string(decoded[2000:4000]))
